@@ -22,4 +22,12 @@ class PrayerTimeModel {
       isha: json['data']['timings']['Isha'],
     );
   }
+
+  List<Map<String, String>> get prayerTimesList => [
+        {'Fajr': fajr},
+        {'Dhuhr': dhuhr},
+        {'Asr': asr},
+        {'Maghrib': maghrib},
+        {'Isha': isha},
+      ];
 }

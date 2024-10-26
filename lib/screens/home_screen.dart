@@ -1,51 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../models/prayer_time_model.dart';
-import '../services/prayer_time_service.dart';
+import '../providers/prayer_time_provider.dart';
 import '../widgets/prayer_time_card.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  PrayerTimeModel? prayerTimes;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchPrayerTimes(); // Fetching prayer times when the app starts
-  }
-
-  Future<void> fetchPrayerTimes() async {
-    prayerTimes = await PrayerTimeService.getPrayerTimes(); // Calls API
-    setState(() {}); // Refresh the UI
-  }
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Prayer Times')),
-      body: prayerTimes == null
-          ? const Center(child: CircularProgressIndicator()) // Loading state
-          : ListView.separated(
-              itemBuilder: (BuildContext context, int index) => PrayerTimeCard(
-                  prayerName: 'Fajr', prayerTime: prayerTimes!.fajr),
-              separatorBuilder: (BuildContext context, int index) =>
-                  const SizedBox(height: 20),
-              itemCount: 5,
-            ),
+      body: Consumer<PrayerTimeProvider>(
+        builder: (context, provider, child) {
+          final prayerTimes = provider.prayerTimes;
+
+          if (prayerTimes == null) {
+            provider
+                .fetchPrayerTimes(); // Fetch prayer times if not yet available
+            return const Center(
+                child: CircularProgressIndicator()); // Loading state
+          }
+
+          // Display all prayer times using ListView.builder
+          return ListView.separated(
+            itemBuilder: (context, index) {
+              final prayer = prayerTimes.prayerTimesList[index];
+              final prayerName = prayer.keys.first;
+              final prayerTime = prayer.values.first;
+
+              return PrayerTimeCard(
+                prayerName: prayerName,
+                prayerTime: prayerTime,
+              );
+            },
+            separatorBuilder: (context, index) => const SizedBox(height: 20),
+            itemCount: prayerTimes.prayerTimesList.length,
+          );
+        },
+      ),
     );
   }
 }
-// [
-//
-// PrayerTimeCard(
-// prayerName: 'Dhuhr', prayerTime: prayerTimes!.dhuhr),
-// PrayerTimeCard(prayerName: 'Asr', prayerTime: prayerTimes!.asr),
-// PrayerTimeCard(
-// prayerName: 'Maghrib', prayerTime: prayerTimes!.maghrib),
-// PrayerTimeCard(
-// prayerName: 'Isha', prayerTime: prayerTimes!.isha),
-// ],

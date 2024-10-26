@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'providers/prayer_time_provider.dart';
 import 'screens/home_screen.dart';
 
 void main() {
-  runApp(myApp());
+  runApp(MyApp());
 }
 
-Widget myApp() {
-  return MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: HomeScreen(),
-  );
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => PrayerTimeProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomeScreen(),
+      ),
+    );
+  }
 }
