@@ -15,28 +15,29 @@ class HomeScreen extends StatelessWidget {
 
           if (prayerTimes == null) {
             provider
-                .fetchPrayerTimes(); // Fetch prayer times if not yet available
+                .fetchPrayerTimes();
             return const Center(
-                child: CircularProgressIndicator()); // Loading state
+                child: CircularProgressIndicator());
+          }else {
+            return ListView.separated(
+              itemBuilder: (context, index) {
+                final prayerName = prayerTimes.data.keys;
+                final prayerTime = prayerTimes.data.values;
+
+
+
+                return PrayerTimeCard(
+                  prayerName: prayerName.elementAt(index),
+                  prayerTime: prayerTime.elementAt(index),
+                );
+              },
+              separatorBuilder: (context, index) => const SizedBox(height: 20),
+              itemCount: prayerTimes.data.length,
+            );
           }
-
-          // Display all prayer times using ListView.builder
-          return ListView.separated(
-            itemBuilder: (context, index) {
-              final prayer = prayerTimes.prayerTimesList[index];
-              final prayerName = prayer.keys.first;
-              final prayerTime = prayer.values.first;
-
-              return PrayerTimeCard(
-                prayerName: prayerName,
-                prayerTime: prayerTime,
-              );
-            },
-            separatorBuilder: (context, index) => const SizedBox(height: 20),
-            itemCount: prayerTimes.prayerTimesList.length,
-          );
         },
       ),
     );
+    }
   }
-}
+

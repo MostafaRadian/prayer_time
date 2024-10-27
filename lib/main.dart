@@ -11,10 +11,8 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => PrayerTimeProvider()),
-      ],
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => PrayerTimeProvider(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: HomeScreen(),
